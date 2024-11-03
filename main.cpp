@@ -6,6 +6,7 @@
 #include <set> // for std::set
 #include <random>
 #include <time.h> //for better randomization
+#include <algorithm> //for a lot of the new changes
 #include "Goat.h"
 using namespace std;
 
@@ -228,7 +229,24 @@ void find_goat(set<Goat>trip)
         cout << "Couldn't find goat with name: " << buf << "in the trip.\n"; 
 }
 
-void double_Ages(set<Goat> &trip)
+void double_ages(set<Goat> &trip)
 {
-    for_each(trip.begin(),trip.end(),[](int&n){n*=2;});
+    for_each(trip.begin(),trip.end(),[](int&n){n*=2;}); //why would you ever need to double all the ages of your goats
+}
+
+/*
+NOTE: I was about 15 seconds into coding a shuffle function when 
+I remembered that sets are ordered... It's like the main appeal
+of using a set. 
+
+void shuffle(set<Goat> &trip)
+{
+    default_random_engine(); //intialize default random engine
+    shuffle(trip.begin(), trip.end()); 
+}
+*/
+
+void add_year(set<Goat> &trip)
+{
+    transform(trip.begin(), trip.end(), trip.begin(), [](int n) { return n - 1; });
 }
