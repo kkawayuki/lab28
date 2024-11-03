@@ -205,5 +205,30 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 void average_ages(set<Goat>trip)
 {
     double totalAge = accumulate(trip.begin(), trip.end(), 0); 
-    cout << "Average age of the goats: " << (totalAge/trip.size()) << '\n'
+    cout << "Average age of the goats: " << (totalAge/trip.size()) << '\n'; 
+}
+
+void clear_goats(set<Goat> &trip)
+{
+    cout << "Clearing all goats...\n";
+    trip.clear();
+    cout << "Result of call to display all: " << display_trip(trip); //to show that now empty
+}
+
+void find_goat(set<Goat>trip)
+{
+    string buf;
+    cout << "Enter name of goat you're looking for (case sensitive): ";
+    cin >> buf; //cin because all goat names are one word, no need for getline()
+
+    auto search = trip.find(buf);
+    if(search != trip.end())
+        cout << "Found " << buf << ", [Age: " << search->get_age() << ", Color: " << search->get_color() << "] \n"; //show that we found by printing info about goat
+    else
+        cout << "Couldn't find goat with name: " << buf << "in the trip.\n"; 
+}
+
+void double_Ages(set<Goat> &trip)
+{
+    for_each(trip.begin(),trip.end(),[](int&n){n*=2;});
 }
