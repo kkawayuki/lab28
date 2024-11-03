@@ -1,4 +1,4 @@
-// COMSC-210 | lab 24 | Kent Kawashima
+// COMSC-210 | lab 28 | Kent Kawashima
 // IDE used: Visual Studio Code
 #include <iostream>
 #include <fstream>
@@ -30,7 +30,8 @@ int main()
     ifstream fin("names.txt");
     string names[SZ_NAMES];
     int i = 0;
-    while (fin >> names[i++]);
+    while (fin >> names[i++])
+        ;
     fin.close();
     ifstream fin1("colors.txt");
     string colors[SZ_COLORS];
@@ -90,7 +91,7 @@ int main_menu()
     cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\nChoice --> ";
     cin >> choice;
 
-    while (choice > 4 || choice < 1) // validation loop
+    while (choice > 12 || choice < 1) // validation loop
     {
         cout << "Invalid choice, please choose one (1-4): ";
         cin >> choice;
@@ -180,7 +181,7 @@ void delete_goat(set<Goat> &trip)
  * the set automatically sorts it by order of
  * its first name, the way in which it sorts
  * could be modified by changing the overloaded
- * < operator. 
+ * < operator.
  *
  * Parameters:
  * trip, set of Goat objects
@@ -197,4 +198,12 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
     temp.set_age(rand() % (MAX_AGE + 1));           // set temp age to random num 0-20
 
     trip.insert(temp); // use insert (instead of push_x function) to add completed goat object to the set
+}
+
+// adding 8 more options with functionality
+
+void average_ages(set<Goat>trip)
+{
+    double totalAge = accumulate(trip.begin(), trip.end(), 0); 
+    cout << "Average age of the goats: " << (totalAge/trip.size()) << '\n'
 }
