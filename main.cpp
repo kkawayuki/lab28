@@ -23,7 +23,6 @@ void display_trip(set<Goat> trip);
 int main_menu();
 
 // algorithm prototypes
-
 void average_ages(set<Goat> trip);
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
@@ -232,7 +231,8 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 /************************************************
  * Function: Calculates and prints the average
- * age of the goats in the trip
+ * age of the goats in the trip, uses the accumulate()
+ * algorithm to do this. 
  *
  * Parameters: trip, set containing the goat objects
  ************************************************/
@@ -244,7 +244,8 @@ void average_ages(set<Goat> trip)
 }
 
 /************************************************
- * Function: Wipes the trip of all goats
+ * Function: Wipes the trip of all goats, uses the 
+ * .clear() algorithm
  *
  * Parameters: &trip, set containing the goat objects
  * passed by reference, as modification of the original
@@ -261,7 +262,7 @@ void clear_goats(set<Goat> &trip)
 /************************************************
  * Function: Locates a specific goat based on the
  * case-sensitive name and prints its details,
- * uses the .
+ * uses the .find() algorithm 
  *
  * Parameters: trip, set containing the goat objects
  ************************************************/
@@ -286,10 +287,19 @@ void find_goat(set<Goat> trip)
  ************************************************/
 void print_ages(set<Goat> trip)
 {
+    cout << "All Ages: \n";
     for_each(trip.begin(), trip.end(), [](Goat goat)
              { cout << goat.get_age() << '\n'; }); // changed functionality to print all ages with single line
 }
 
+/************************************************
+ * Function: Iterates through the trip using the
+ * any_of() algorithm as a boolean check to see
+ * if any of the goats are over the age of 15, 
+ * (considered a senior)
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void has_senior(set<Goat> trip)
 {
     bool isOld = any_of(trip.begin(), trip.end(), [](Goat goat)
@@ -297,7 +307,13 @@ void has_senior(set<Goat> trip)
     cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';
 }
 
-// NOTE: Data is sent from the set into a seperate vector for storage due to the immutable nature of sets
+/************************************************
+ * Function: Copies all data from the vectore into
+ * a static vector, (as data cannot be copied to
+ * another set using the copy() algorithm)
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void copy_trip(set<Goat> trip)
 {
     static vector<Goat> trip2;                     // made static so user could technically reference later on if needed
@@ -305,7 +321,15 @@ void copy_trip(set<Goat> trip)
     cout << "Copy complete, data stored in a seperate vector.\n";
 }
 
-// nonpermanent change (does not apply to set), applies transformation to a vector of ints
+/************************************************
+ * Function: Creates a vector that contains the 
+ * result of incrementing all age fields of the 
+ * original trip and compares the values to the
+ * original through iterative print statements
+ * using the transform() algorithm. 
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void add_year(set<Goat> trip)
 {
     static vector<int> agesPlusOne(trip.size());
@@ -325,11 +349,19 @@ void add_year(set<Goat> trip)
     cout << '\n';
 }
 
+/************************************************
+ * Function: Creates a vector that contains a random-
+ * ized order of the set elements, randomizing
+ * the order using the shuffle() algorithm, then
+ * outputs the data of the vector to compare to
+ * the original, sorted version. 
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void shuffle_trip(set<Goat> trip)
 {
-    static vector<Goat> shuffledTrip;                     // made static so user could technically reference later on if needed
+    vector<Goat> shuffledTrip(trip.size());
     copy(trip.begin(), trip.end(), shuffledTrip.begin()); // copy contents of trip 1 into vector 2
-
     shuffle(shuffledTrip.begin(), shuffledTrip.end(), default_random_engine());
 
     int i = 1;
