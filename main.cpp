@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <set> // for std::set
+#include <list> // for std::list
 #include <random>
 #include <time.h>    //for better randomization
 #include <algorithm> //for a lot of the new changes
@@ -16,23 +16,21 @@ using namespace std;
 const int SZ_NAMES = 200, SZ_COLORS = 25, MAX_AGE = 20;
 
 // function prototypes
-int select_goat(set<Goat> trip);
-void delete_goat(set<Goat> &trip);
-void add_goat(set<Goat> &trip, string colors[], string names[]);
-void display_trip(set<Goat> trip);
+int select_goat(list<Goat> trip);
+void delete_goat(list<Goat> &trip);
+void add_goat(list<Goat> &trip, string colors[], string names[]);
+void display_trip(list<Goat> trip);
 int main_menu();
 
 // algorithm prototypes
-void average_ages(set<Goat> trip);
-void clear_goats(set<Goat> &trip);
-void find_goat(set<Goat> trip);
-void print_ages(set<Goat> trip);
-void copy_trip(set<Goat> trip);
-void add_year(set<Goat> trip);
-void shuffle_trip(set<Goat> trip);
-void has_senior(set<Goat> trip);
-
-// void remove_age(set<Goat> &trip);
+void average_ages(list<Goat> trip);
+void clear_goats(list<Goat> &trip);
+void merge_trip(list<Goat> &trip);
+void print_ages(list<Goat> trip);
+void copy_trip(list<Goat> trip);
+void add_year(list<Goat> trip);
+void shuffle_trip(list<Goat> trip);
+void has_senior(list<Goat> trip);
 
 /************************************************
  * Function: Main
@@ -56,7 +54,7 @@ int main()
     fin1.close();
 
     // note: names/colors arrays now full of values
-    set<Goat> trip; // set of goats is called a trip?
+    list<Goat> trip; // list of goats is called a trip?
 
     // my code
     bool again = true;
@@ -68,7 +66,7 @@ int main()
         {
         case (1):
         {
-            add_goat(trip, colors, names); // pass set of trips, colors[], names[]
+            add_goat(trip, colors, names); // pass list of trips, colors[], names[]
             cout << "Added goat!\n";
             break;
         }
@@ -99,7 +97,7 @@ int main()
         }
         case (7):
         {
-            find_goat(trip);
+            merge_trip(trip);
             break;
         }
         case (8):
@@ -143,7 +141,7 @@ int main_menu()
          << "[4] Quit\n"
          << "[5] Average Ages\n"
          << "[6] Clear Set\n"
-         << "[7] Find Goat\n"
+         << "[7] Merge trip\n"
          << "[8] Print All Ages\n"
          << "[9] Copy Trip\n"
          << "[10] Add +1 Year to All\n"
@@ -160,7 +158,7 @@ int main_menu()
     return (choice);
 }
 
-void display_trip(set<Goat> trip) // displays all goats in the "trip"
+void display_trip(list<Goat> trip) // displays all goats in the "trip"
 {
     if (trip.empty())
     {
@@ -176,14 +174,13 @@ void display_trip(set<Goat> trip) // displays all goats in the "trip"
     }
 }
 
-
-int select_goat(set<Goat> trip)
+int select_goat(list<Goat> trip)
 {
     int index = 0;
 
     if (trip.size() > 0)
     {
-        display_trip(trip); // display set of all first
+        display_trip(trip); // display list of all first
 
         cout << "What is the index of the Goat that you want to remove: ";
         cin >> index;
@@ -200,8 +197,7 @@ int select_goat(set<Goat> trip)
     return (index - 1);
 }
 
-
-void delete_goat(set<Goat> &trip)
+void delete_goat(list<Goat> &trip)
 {
     int posToDelete = select_goat(trip); // correct implementation of select?
     if (posToDelete == -1)
@@ -215,28 +211,25 @@ void delete_goat(set<Goat> &trip)
     trip.erase(it);
 }
 
-
-void add_goat(set<Goat> &trip, string colors[], string names[])
+void add_goat(list<Goat> &trip, string colors[], string names[])
 {
     Goat temp;
 
-    temp.set_name(names[rand() % SZ_NAMES + 1]);    // set temp's name to a random index of names[] array (1-200)
-    temp.set_color(colors[rand() % SZ_COLORS + 1]); // set temp's color to a random index of colors[]] array (1-25)
-    temp.set_age(rand() % (MAX_AGE + 1));           // set temp age to random num 0-20
+    temp.set_name(names[rand() % SZ_NAMES + 1]);    // list temp's name to a random index of names[] array (1-200)
+    temp.set_color(colors[rand() % SZ_COLORS + 1]); // list temp's color to a random index of colors[]] array (1-25)
+    temp.set_age(rand() % (MAX_AGE + 1));           // list temp age to random num 0-20
 
-    trip.insert(temp); // use insert (instead of push_x function) to add completed goat object to the set
+    trip.push_back(temp); // push back to add completed goat object to the list
 }
-
-// new functions
 
 /************************************************
  * Function: Calculates and prints the average
  * age of the goats in the trip, uses the accumulate()
- * algorithm to do this. 
+ * algorithm to do this.
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void average_ages(set<Goat> trip)
+void average_ages(list<Goat> trip)
 {
     double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat)
                                  { return sum + goat.get_age(); }); // lambda function
@@ -244,14 +237,14 @@ void average_ages(set<Goat> trip)
 }
 
 /************************************************
- * Function: Wipes the trip of all goats, uses the 
+ * Function: Wipes the trip of all goats, uses the
  * .clear() algorithm
  *
- * Parameters: &trip, set containing the goat objects
+ * Parameters: &trip, list containing the goat objects
  * passed by reference, as modification of the original
- * set happens in the function
+ * list happens in the function
  ************************************************/
-void clear_goats(set<Goat> &trip)
+void clear_goats(list<Goat> &trip)
 {
     cout << "Clearing all goats...\n";
     trip.clear();
@@ -260,32 +253,30 @@ void clear_goats(set<Goat> &trip)
 }
 
 /************************************************
- * Function: Locates a specific goat based on the
- * case-sensitive name and prints its details,
- * uses the .find() algorithm 
+ * Function: Merges the existing trip with a new
+ * trip containing three more Goats, could additionally
+ * implement logic that allows for random or user 
+ * specified goats. Uses the merge() algorithm
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: &trip, list containing the goat objects
+ * passed by reference, as modification of the original
+ * list happens in the function
  ************************************************/
-void find_goat(set<Goat> trip)
+void merge_trip(list<Goat> &trip)
 {
-    string buf;
-    cout << "Enter name of goat you're looking for (case sensitive): ";
-    cin >> buf; // cin because all goat names are one word, no need for getline()
-
-    auto search = trip.find(buf);
-    if (search != trip.end())
-        cout << "Found " << buf << ", [Age: " << search->get_age() << ", Color: " << search->get_color() << "] \n"; // show that we found by printing info about goat
-    else
-        cout << "Couldn't find goat with name: " << buf << "in the trip.\n";
+    list<Goat> temp = {{"Timmy",15,"Turquoise"},{"John",12,"Yellow"},{"Bing",11,"Black"}}; //3 goats
+    list<Goat> mergedVec(trip.size() + temp.size());
+    merge(trip.begin(), trip.end(), temp.begin(), temp.end(), mergedVec.begin());
+    trip = mergedVec; 
 }
 
 /************************************************
  * Function: Prints all ages only of the goats in
- * the set using the for_each() algorithm
+ * the list using the for_each() algorithm
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void print_ages(set<Goat> trip)
+void print_ages(list<Goat> trip)
 {
     cout << "All Ages: \n";
     for_each(trip.begin(), trip.end(), [](Goat goat)
@@ -295,12 +286,12 @@ void print_ages(set<Goat> trip)
 /************************************************
  * Function: Iterates through the trip using the
  * any_of() algorithm as a boolean check to see
- * if any of the goats are over the age of 15, 
+ * if any of the goats are over the age of 15,
  * (considered a senior)
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void has_senior(set<Goat> trip)
+void has_senior(list<Goat> trip)
 {
     bool isOld = any_of(trip.begin(), trip.end(), [](Goat goat)
                         { return goat.get_age() > 15; });
@@ -308,57 +299,56 @@ void has_senior(set<Goat> trip)
 }
 
 /************************************************
- * Function: Copies all data from the vectore into
- * a static vector, (as data cannot be copied to
- * another set using the copy() algorithm)
+ * Function: Copies all data from list trip to a 
+ * seperate trip, shows the depth of the copy by
+ * calling various functions to change trip2
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void copy_trip(set<Goat> trip)
+void copy_trip(list<Goat> trip)
 {
-    static vector<Goat> trip2;                     // made static so user could technically reference later on if needed
+    list<Goat> trip2;                     
     copy(trip.begin(), trip.end(), trip2.begin()); // copy contents of trip 1 into vector 2
-    cout << "Copy complete, data stored in a seperate vector.\n";
+    cout << "Copy complete, data stored in a seperate list.\n";
+
+    //modifications to trip 2 copy
+    merge_trip(trip2);
+    display_trip(trip2);
+    clear_goats(trip2);
+    cout << "After modifying trip 2: \n";
+    display_trip(trip2);
 }
 
 /************************************************
- * Function: Creates a vector that contains the 
- * result of incrementing all age fields of the 
+ * Function: Creates a vector that contains the
+ * result of incrementing all age fields of the
  * original trip and compares the values to the
  * original through iterative print statements
- * using the transform() algorithm. 
+ * using the transform() algorithm.
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void add_year(set<Goat> trip)
+void add_year(list<Goat> &trip)
 {
-    static vector<int> agesPlusOne(trip.size());
-    transform(trip.begin(), trip.end(), agesPlusOne.begin(), [](Goat n)
+    transform(trip.begin(), trip.end(), trip.begin(), [](Goat &n)
               { return (n.get_age() + 1); });
 
     // display changes
-    cout << "Original Ages: \n";
+    cout << "Resultant Ages: \n";
     print_ages(trip);
-    cout << '\n';
-
-    cout << "Transformed ages: \n";
-    for (const auto &i : agesPlusOne)
-    {
-        cout << i << '\n';
-    }
     cout << '\n';
 }
 
 /************************************************
  * Function: Creates a vector that contains a random-
- * ized order of the set elements, randomizing
+ * ized order of the list elements, randomizing
  * the order using the shuffle() algorithm, then
  * outputs the data of the vector to compare to
- * the original, sorted version. 
+ * the original, sorted version.
  *
- * Parameters: trip, set containing the goat objects
+ * Parameters: trip, list containing the goat objects
  ************************************************/
-void shuffle_trip(set<Goat> trip)
+void shuffle_trip(list<Goat> trip)
 {
     vector<Goat> shuffledTrip(trip.size());
     copy(trip.begin(), trip.end(), shuffledTrip.begin()); // copy contents of trip 1 into vector 2
@@ -370,16 +360,3 @@ void shuffle_trip(set<Goat> trip)
         cout << "[" << i << "] " << it->get_name() << "(" << it->get_age() << ", " << it->get_color() << ")\n"; // print result of shuffle
     }
 }
-
-// void remove_age(set<Goat> &trip)
-// {
-//     int i;
-//     cout << "Enter the age of goat(s) that you want to remove: ";
-//     cin >> i;
-//     while (i < 0)
-//     {
-//         cout << "ERROR, age cannot be negative, try again: ";
-//         cin >> i;
-//     }
-//     trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
-// }
