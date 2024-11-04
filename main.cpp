@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <set> // for std::set
 #include <random>
-#include <time.h> //for better randomization
+#include <time.h>    //for better randomization
 #include <algorithm> //for a lot of the new changes
 #include "Goat.h"
 using namespace std;
@@ -19,6 +19,16 @@ void delete_goat(set<Goat> &trip);
 void add_goat(set<Goat> &trip, string colors[], string names[]);
 void display_trip(set<Goat> trip);
 int main_menu();
+
+// algorithm prototypes
+void average_ages(set<Goat> trip);
+void clear_goats(set<Goat> &trip);
+void find_goat(set<Goat> trip);
+void double_ages(set<Goat> &trip);
+void add_year(set<Goat> &trip);
+void replace(set<Goat> &trip);
+void is_senior(set<Goat> trip);
+void remove_age(set<Goat> &trip);
 
 /************************************************
  * Function: Main
@@ -37,7 +47,8 @@ int main()
     ifstream fin1("colors.txt");
     string colors[SZ_COLORS];
     i = 0;
-    while (fin1 >> colors[i++]);
+    while (fin1 >> colors[i++])
+        ;
     fin1.close();
 
     // note: names/colors arrays now full of values
@@ -72,6 +83,46 @@ int main()
             again = false;
             break;
         }
+        case (5):
+        {
+            average_ages(trip);
+            break;
+        }
+        case (6):
+        {
+            clear_goats(trip);
+            break;
+        }
+        case (7):
+        {
+            find_goat(trip);
+            break;
+        }
+        case (8):
+        {
+            double_ages(trip);
+            break;
+        }
+        case (9):
+        {
+            add_year(trip);
+            break;
+        }
+        case (10):
+        {
+            replace(trip);
+            break;
+        }
+        case (11):
+        {
+            is_senior(trip);
+            break;
+        }
+        case (12):
+        {
+            remove_age(trip);
+            break;
+        }
             // NOTE: no default needed, as int choice validation is in main_menu() function
         }
     }
@@ -89,7 +140,7 @@ int main()
 int main_menu()
 {
     int choice;
-    cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\nChoice --> ";
+    cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\n[5] Average Ages\n[6] Clear Set\n[7] Find Goat\n[8] Double All Ages\n[9] Add +1 Year to All\n[10] Replace Goat\n[11] Determine Senior Goats\n[12] Remove Goat(s) Based on Age\nChoice --> ";
     cin >> choice;
 
     while (choice > 12 || choice < 1) // validation loop
@@ -203,90 +254,94 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 // adding 8 more options with functionality
 
-void average_ages(set<Goat>trip)
+void average_ages(set<Goat> trip)
 {
-    double totalAge = accumulate(trip.begin(), trip.end(), 0); 
-    cout << "Average age of the goats: " << (totalAge/trip.size()) << '\n'; 
+    double totalAge = accumulate(trip.begin(), trip.end(), 0);
+    cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
 
 void clear_goats(set<Goat> &trip)
 {
     cout << "Clearing all goats...\n";
     trip.clear();
-    cout << "Result of call to display all: " << display_trip(trip); //to show that now empty
+    cout << "Result of call to display all: ";
+    display_trip(trip); // to show that now empty
 }
 
-void find_goat(set<Goat>trip)
+void find_goat(set<Goat> trip)
 {
     string buf;
     cout << "Enter name of goat you're looking for (case sensitive): ";
-    cin >> buf; //cin because all goat names are one word, no need for getline()
+    cin >> buf; // cin because all goat names are one word, no need for getline()
 
     auto search = trip.find(buf);
-    if(search != trip.end())
-        cout << "Found " << buf << ", [Age: " << search->get_age() << ", Color: " << search->get_color() << "] \n"; //show that we found by printing info about goat
+    if (search != trip.end())
+        cout << "Found " << buf << ", [Age: " << search->get_age() << ", Color: " << search->get_color() << "] \n"; // show that we found by printing info about goat
     else
-        cout << "Couldn't find goat with name: " << buf << "in the trip.\n"; 
+        cout << "Couldn't find goat with name: " << buf << "in the trip.\n";
 }
 
 void double_ages(set<Goat> &trip)
 {
-    for_each(trip.begin(),trip.end(),[](int&n){n*=2;}); //why would you ever need to double all the ages of your goats
+    for_each(trip.begin(), trip.end(), [](int &n = trip->)
+             { n *= 2; }); // why would you ever need to double all the ages of your goats
 }
 
-/*
-NOTE: I was about 15 seconds into coding a shuffle function when 
-I remembered that sets are ordered... It's like the main appeal
-of using a set. 
-
-void shuffle(set<Goat> &trip)
+void add_year(set<Goat> &trip) // adds +1 to all years in the set
 {
-    default_random_engine(); //intialize default random engine
-    shuffle(trip.begin(), trip.end()); 
-}
-*/
-
-void add_year(set<Goat> &trip) //adds +1 to all years in the set
-{
-    transform(trip.begin(), trip.end(), trip.begin(), [](int n) { return n + 1; });
+    transform(trip.begin(), trip.end(), trip.begin(), [](int n)
+              { return n + 1; });
 }
 
 void replace(set<Goat> &trip)
 {
     int current, target;
-    cout << "Enter the current year that you want to replace: ";
+    cout << "Enter the current age of goat(s) that you want to replace: ";
     cin >> current;
-    while(current < 0)
+    while (current < 0)
     {
         cout << "ERROR, age cannot be negative, try again: ";
         cin >> current;
     }
 
-    cout << "Enter the year to change current to: ";
+    cout << "Enter the year to change their current to: ";
     cin >> target;
-    while(target < 0)
+    while (target < 0)
     {
         cout << "ERROR, age cannot be negative, try again: ";
         cin >> target;
     }
-    replace(trip.begin(), trip.end(), current, target); 
+    replace(trip.begin(), trip.end(), current, target);
 }
 
 void is_senior(set<Goat> trip)
 {
-    bool isOld = any_of(trip.begin(), trip.end(), [](int score) { return score > 15; });
-    cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';    
+    bool isOld = any_of(trip.begin(), trip.end(), [](int score)
+                        { return score > 15; });
+    cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';
 }
 
-void remove_age(set<Goat>&trip)
+void remove_age(set<Goat> &trip)
 {
     int i;
-    cout << "Enter the year of goat(s) that you want to remove: ";
+    cout << "Enter the age of goat(s) that you want to remove: ";
     cin >> i;
-    while(i < 0)
+    while (i < 0)
     {
         cout << "ERROR, age cannot be negative, try again: ";
         cin >> i;
     }
     trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
 }
+
+/*
+NOTE: I was about 15 seconds into coding a shuffle function when
+I remembered that sets are ordered... It's like the main appeal
+of using a set.
+
+void shuffle(set<Goat> &trip)
+{
+    default_random_engine(); //intialize default random engine
+    shuffle(trip.begin(), trip.end());
+}
+*/
