@@ -29,10 +29,8 @@ void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void print_ages(set<Goat> trip);
 void copy_trip(set<Goat> trip);
-
 void add_year(set<Goat> trip);
-void replace(set<Goat> &trip);
-
+void shuffle_trip(set<Goat> trip);
 void has_senior(set<Goat> trip);
 
 // void remove_age(set<Goat> &trip);
@@ -110,47 +108,49 @@ int main()
             print_ages(trip);
             break;
         }
-            /*
-            case (9):
-            {
-                add_year(trip);
-                break;
-            }
-            case (10):
-            {
-                replace(trip);
-                break;
-            } */
-
+        case (9):
+        {
+            copy_trip(trip);
+            break;
+        }
+        case (10):
+        {
+            add_year(trip);
+            break;
+        }
         case (11):
+        {
+            shuffle_trip(trip);
+            break;
+        }
+        case (12):
         {
             has_senior(trip);
             break;
         }
-            /*
-            case (12):
-            {
-                remove_age(trip);
-                break;
-            }
-            */
         }
     }
 
     return 0;
 }
 
-/************************************************
- * Function: prints out the details of the menu
- * for the menu-driven application
- *
- * Parameters: NONE
- * Return: int, value corresponding to user desires
- ************************************************/
 int main_menu()
 {
     int choice;
-    cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\n[5] Average Ages\n[6] Clear Set\n[7] Find Goat\n[8] Print All Ages\n[9] Add +1 Year to All\n[10] Replace Goat\n[11] Determine Senior Goats\n[12] Remove Goat(s) Based on Age\nChoice --> ";
+    cout << "\n*** GOAT MANAGER 3001 ***\n"
+         << "[1] Add a goat\n"
+         << "[2] Delete a goat\n"
+         << "[3] List goats\n"
+         << "[4] Quit\n"
+         << "[5] Average Ages\n"
+         << "[6] Clear Set\n"
+         << "[7] Find Goat\n"
+         << "[8] Print All Ages\n"
+         << "[9] Copy Trip\n"
+         << "[10] Add +1 Year to All\n"
+         << "[11] Shuffle Trip\n"
+         << "[12] Check for Senior Goats\n"
+         << "Choice --> ";
     cin >> choice;
 
     while (choice > 12 || choice < 1) // validation loop
@@ -161,13 +161,6 @@ int main_menu()
     return (choice);
 }
 
-/************************************************
- * Function: prints out the details and index
- * of each goat in a set formatted nicely
- *
- * Parameters: trip, set of Goat objects
- * Return: NONE
- ************************************************/
 void display_trip(set<Goat> trip) // displays all goats in the "trip"
 {
     if (trip.empty())
@@ -184,15 +177,7 @@ void display_trip(set<Goat> trip) // displays all goats in the "trip"
     }
 }
 
-/************************************************
- * Function: prompts and returns a specific goat object for
- * removal by the user, returning the input of user
- * if it is valid
- *
- * Parameters: trip, set of Goat objects
- * Return: int, value corresponding to user desired
- * goat to remove from the set
- ************************************************/
+
 int select_goat(set<Goat> trip)
 {
     int index = 0;
@@ -216,13 +201,7 @@ int select_goat(set<Goat> trip)
     return (index - 1);
 }
 
-/************************************************
- * Function: deletes a goat of specific index
- * specified by helper function select_goat()
- *
- * Parameters: trip, set of Goat objects
- * Return: NONE
- ************************************************/
+
 void delete_goat(set<Goat> &trip)
 {
     int posToDelete = select_goat(trip); // correct implementation of select?
@@ -237,20 +216,7 @@ void delete_goat(set<Goat> &trip)
     trip.erase(it);
 }
 
-/************************************************
- * Function: adds a new Goat object to the set
- * with a random name, age, and color, note that
- * the set automatically sorts it by order of
- * its first name, the way in which it sorts
- * could be modified by changing the overloaded
- * < operator.
- *
- * Parameters:
- * trip, set of Goat objects
- * colors[], array of possible goat colors
- * names[], array of possible goat names
- * Return: NONE
- ************************************************/
+
 void add_goat(set<Goat> &trip, string colors[], string names[])
 {
     Goat temp;
@@ -264,6 +230,12 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 // new functions
 
+/************************************************
+ * Function: Calculates and prints the average
+ * age of the goats in the trip
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void average_ages(set<Goat> trip)
 {
     double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat)
@@ -271,6 +243,13 @@ void average_ages(set<Goat> trip)
     cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
 
+/************************************************
+ * Function: Wipes the trip of all goats
+ *
+ * Parameters: &trip, set containing the goat objects
+ * passed by reference, as modification of the original
+ * set happens in the function
+ ************************************************/
 void clear_goats(set<Goat> &trip)
 {
     cout << "Clearing all goats...\n";
@@ -279,6 +258,13 @@ void clear_goats(set<Goat> &trip)
     display_trip(trip); // to show that now empty
 }
 
+/************************************************
+ * Function: Locates a specific goat based on the
+ * case-sensitive name and prints its details,
+ * uses the .
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void find_goat(set<Goat> trip)
 {
     string buf;
@@ -292,6 +278,12 @@ void find_goat(set<Goat> trip)
         cout << "Couldn't find goat with name: " << buf << "in the trip.\n";
 }
 
+/************************************************
+ * Function: Prints all ages only of the goats in
+ * the set using the for_each() algorithm
+ *
+ * Parameters: trip, set containing the goat objects
+ ************************************************/
 void print_ages(set<Goat> trip)
 {
     for_each(trip.begin(), trip.end(), [](Goat goat)
@@ -313,69 +305,49 @@ void copy_trip(set<Goat> trip)
     cout << "Copy complete, data stored in a seperate vector.\n";
 }
 
-
 // nonpermanent change (does not apply to set), applies transformation to a vector of ints
-void add_year(set<Goat> trip) 
+void add_year(set<Goat> trip)
 {
-    static vector<int> agesPlusOne(trip.size()); 
+    static vector<int> agesPlusOne(trip.size());
     transform(trip.begin(), trip.end(), agesPlusOne.begin(), [](Goat n)
-              {return(n.get_age()+1);});
-    
-    //display changes
-    cout << "Original Ages: \n"; 
+              { return (n.get_age() + 1); });
+
+    // display changes
+    cout << "Original Ages: \n";
     print_ages(trip);
     cout << '\n';
 
-    cout << "Transformed ages: \n"; 
-    for(const auto &i : agesPlusOne)
+    cout << "Transformed ages: \n";
+    for (const auto &i : agesPlusOne)
     {
-        cout << i << '\n'; 
+        cout << i << '\n';
     }
     cout << '\n';
 }
 
-
-// experimental
-
-void replace(set<Goat> &trip)
+void shuffle_trip(set<Goat> trip)
 {
-    vector<Goat>replacedTrip = trip; 
+    static vector<Goat> shuffledTrip;                     // made static so user could technically reference later on if needed
+    copy(trip.begin(), trip.end(), shuffledTrip.begin()); // copy contents of trip 1 into vector 2
 
-    int current, target;
-    cout << "Enter the current age of goat(s) that you want to replace: ";
-    cin >> current;
-    while (current < 0)
-    {
-        cout << "ERROR, age cannot be negative, try again: ";
-        cin >> current;
-    }
+    shuffle(shuffledTrip.begin(), shuffledTrip.end(), default_random_engine());
 
-    cout << "Enter the year to change their current to: ";
-    cin >> target;
-    while (target < 0)
+    int i = 1;
+    for (auto it = shuffledTrip.begin(); it != shuffledTrip.end(); ++it, ++i) // for each element in trip
     {
-        cout << "ERROR, age cannot be negative, try again: ";
-        cin >> target;
+        cout << "[" << i << "] " << it->get_name() << "(" << it->get_age() << ", " << it->get_color() << ")\n"; // print result of shuffle
     }
-    replace(trip.begin(), trip.end(), current, target);
 }
 
-
-/*
-
-
-
-void remove_age(set<Goat> &trip)
-{
-    int i;
-    cout << "Enter the age of goat(s) that you want to remove: ";
-    cin >> i;
-    while (i < 0)
-    {
-        cout << "ERROR, age cannot be negative, try again: ";
-        cin >> i;
-    }
-    trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
-}
-
-*/
+// void remove_age(set<Goat> &trip)
+// {
+//     int i;
+//     cout << "Enter the age of goat(s) that you want to remove: ";
+//     cin >> i;
+//     while (i < 0)
+//     {
+//         cout << "ERROR, age cannot be negative, try again: ";
+//         cin >> i;
+//     }
+//     trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
+// }
