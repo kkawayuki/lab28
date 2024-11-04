@@ -246,7 +246,47 @@ void shuffle(set<Goat> &trip)
 }
 */
 
-void add_year(set<Goat> &trip)
+void add_year(set<Goat> &trip) //adds +1 to all years in the set
 {
-    transform(trip.begin(), trip.end(), trip.begin(), [](int n) { return n - 1; });
+    transform(trip.begin(), trip.end(), trip.begin(), [](int n) { return n + 1; });
+}
+
+void replace(set<Goat> &trip)
+{
+    int current, target;
+    cout << "Enter the current year that you want to replace: ";
+    cin >> current;
+    while(current < 0)
+    {
+        cout << "ERROR, age cannot be negative, try again: ";
+        cin >> current;
+    }
+
+    cout << "Enter the year to change current to: ";
+    cin >> target;
+    while(target < 0)
+    {
+        cout << "ERROR, age cannot be negative, try again: ";
+        cin >> target;
+    }
+    replace(trip.begin(), trip.end(), current, target); 
+}
+
+void is_senior(set<Goat> trip)
+{
+    bool isOld = any_of(trip.begin(), trip.end(), [](int score) { return score > 15; });
+    cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';    
+}
+
+void remove_age(set<Goat>&trip)
+{
+    int i;
+    cout << "Enter the year of goat(s) that you want to remove: ";
+    cin >> i;
+    while(i < 0)
+    {
+        cout << "ERROR, age cannot be negative, try again: ";
+        cin >> i;
+    }
+    trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
 }
