@@ -8,6 +8,8 @@
 #include <time.h>    //for better randomization
 #include <algorithm> //for a lot of the new changes
 #include "Goat.h"
+
+#include<numeric> //needed? 
 using namespace std;
 
 // global variables
@@ -25,10 +27,10 @@ int main_menu();
 
 
 void average_ages(set<Goat> trip);
-/*
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void double_ages(set<Goat> &trip);
+/*
 void add_year(set<Goat> &trip);
 void replace(set<Goat> &trip);
 void is_senior(set<Goat> trip);
@@ -94,7 +96,6 @@ int main()
             average_ages(trip);
             break;
         }
-        /*
         case (6):
         {
             clear_goats(trip);
@@ -110,6 +111,7 @@ int main()
             double_ages(trip);
             break;
         }
+        /*
         case (9):
         {
             add_year(trip);
@@ -266,11 +268,11 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 void average_ages(set<Goat> trip)
 {
-    double totalAge = accumulate(trip.begin(), trip.end(), 0);
+    double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat) { return sum + goat.get_age(); }); //lambda function 
     cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
 
-/*
+
 
 void clear_goats(set<Goat> &trip)
 {
@@ -279,7 +281,6 @@ void clear_goats(set<Goat> &trip)
     cout << "Result of call to display all: ";
     display_trip(trip); // to show that now empty
 }
-
 
 void find_goat(set<Goat> trip)
 {
@@ -296,10 +297,9 @@ void find_goat(set<Goat> trip)
 
 void double_ages(set<Goat> &trip)
 {
-    for_each(trip.begin(), trip.end(), [](int &n)
-             { n *= 2; }); // why would you ever need to double all the ages of your goats
+    for_each(trip.begin(), trip.end(), [](Goat goat){ goat.set_age(goat.get_age()*2); }); // why would you ever need to double all the ages of your goats
 }
-
+/*
 void add_year(set<Goat> &trip) // adds +1 to all years in the set
 {
     transform(trip.begin(), trip.end(), trip.begin(), [](int n)
