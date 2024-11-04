@@ -9,7 +9,7 @@
 #include <algorithm> //for a lot of the new changes
 #include "Goat.h"
 
-#include<numeric> //needed? 
+#include <numeric> //needed?
 using namespace std;
 
 // global variables
@@ -24,24 +24,18 @@ int main_menu();
 
 // algorithm prototypes
 
-
-
 void average_ages(set<Goat> trip);
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void print_ages(set<Goat> trip);
-//void copy_trip(set<Goat> trip); 
+void copy_trip(set<Goat> trip);
 
-
-//void add_year(set<Goat> &trip);
-//void replace(set<Goat> &trip);
-
+void add_year(set<Goat> trip);
+// void replace(set<Goat> &trip);
 
 void has_senior(set<Goat> trip);
 
-
-//void remove_age(set<Goat> &trip);
-
+// void remove_age(set<Goat> &trip);
 
 /************************************************
  * Function: Main
@@ -116,33 +110,31 @@ int main()
             print_ages(trip);
             break;
         }
-        /*
-        case (9):
-        {
-            add_year(trip);
-            break;
-        }  
-        case (10):
-        {
-            replace(trip);
-            break;
-        } */
-     
+            /*
+            case (9):
+            {
+                add_year(trip);
+                break;
+            }
+            case (10):
+            {
+                replace(trip);
+                break;
+            } */
+
         case (11):
         {
             has_senior(trip);
             break;
         }
-        /*
-        case (12):
-        {
-            remove_age(trip);
-            break;
+            /*
+            case (12):
+            {
+                remove_age(trip);
+                break;
+            }
+            */
         }
-        */
-            
-        }
-        
     }
 
     return 0;
@@ -274,7 +266,8 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 void average_ages(set<Goat> trip)
 {
-    double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat) { return sum + goat.get_age(); }); //lambda function 
+    double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat)
+                                 { return sum + goat.get_age(); }); // lambda function
     cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
 
@@ -301,7 +294,8 @@ void find_goat(set<Goat> trip)
 
 void print_ages(set<Goat> trip)
 {
-    for_each(trip.begin(), trip.end(), [](Goat goat){ cout << goat.get_age() << '\n';}); //changed functionality to print all ages with single line
+    for_each(trip.begin(), trip.end(), [](Goat goat)
+             { cout << goat.get_age() << '\n'; }); // changed functionality to print all ages with single line
 }
 
 void has_senior(set<Goat> trip)
@@ -311,13 +305,24 @@ void has_senior(set<Goat> trip)
     cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';
 }
 
-/*
-void add_year(set<Goat> &trip) // adds +1 to all years in the set
+// NOTE: Data is sent from the set into a seperate vector for storage due to the immutable nature of sets
+void copy_trip(set<Goat> trip)
 {
-    transform(trip.begin(), trip.end(), trip.begin(), [](Goat &n) 
-              { return n.set_age(n.get_age()+1);}); //not working due to immutability
+    static vector<Goat> trip2;                     // made static so user could technically reference later on if needed
+    copy(trip.begin(), trip.end(), trip2.begin()); // copy contents of trip 1 into vector 2
+    cout << "Copy complete, data stored in a seperate vector.\n";
 }
 
+// experimental
+
+void add_year(set<Goat> trip) // adds +1 to all years in the set
+{
+    static vector<Goat> tripPlusOne; 
+    transform(trip.begin(), trip.end(), tripPlusOne.begin(), [](Goat n)
+              { return n.set_age(n.get_age()+1);});
+}
+
+/*
 void replace(set<Goat> &trip)
 {
     int current, target;
@@ -339,15 +344,8 @@ void replace(set<Goat> &trip)
     replace(trip.begin(), trip.end(), current, target);
 }*/
 
-
-
 /*
-void copy_trip(set<Goat> trip)
-{
-    set<Goat> trip2; 
-    copy(trip.begin(),trip.end(), trip2.begin()); //copy contents of trip 1 into 2
-    cout << "Copy complete\n"; 
-} 
+
 
 
 void remove_age(set<Goat> &trip)
