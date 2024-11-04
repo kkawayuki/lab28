@@ -29,14 +29,14 @@ int main_menu();
 void average_ages(set<Goat> trip);
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
-void double_ages(set<Goat> &trip);
+void print_ages(set<Goat> trip);
 
-/*
-void add_year(set<Goat> &trip);
+
+void add_year(set<Goat> &trip);/*
 void replace(set<Goat> &trip);
 */
 
-void is_senior(set<Goat> trip);
+void has_senior(set<Goat> trip);
 
 /*
 void remove_age(set<Goat> &trip);
@@ -112,24 +112,24 @@ int main()
         }
         case (8):
         {
-            double_ages(trip);
+            print_ages(trip);
             break;
         }
-        /*
+        
         case (9):
         {
             add_year(trip);
             break;
-        }
-        case (10):
+        }  
+        case (10):/*
         {
             replace(trip);
             break;
-        }
-        */
+        } */
+     
         case (11):
         {
-            is_senior(trip);
+            has_senior(trip);
             break;
         }
         /*
@@ -157,7 +157,7 @@ int main()
 int main_menu()
 {
     int choice;
-    cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\n[5] Average Ages\n[6] Clear Set\n[7] Find Goat\n[8] Double All Ages\n[9] Add +1 Year to All\n[10] Replace Goat\n[11] Determine Senior Goats\n[12] Remove Goat(s) Based on Age\nChoice --> ";
+    cout << "\n*** GOAT MANAGER 3001 ***\n[1] Add a goat\n[2] Delete a goat\n[3] List goats\n[4] Quit\n[5] Average Ages\n[6] Clear Set\n[7] Find Goat\n[8] Print All Ages\n[9] Add +1 Year to All\n[10] Replace Goat\n[11] Determine Senior Goats\n[12] Remove Goat(s) Based on Age\nChoice --> ";
     cin >> choice;
 
     while (choice > 12 || choice < 1) // validation loop
@@ -271,14 +271,11 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 // adding 8 more options with functionality
 
-
 void average_ages(set<Goat> trip)
 {
     double totalAge = accumulate(trip.begin(), trip.end(), 0, [](int sum, Goat goat) { return sum + goat.get_age(); }); //lambda function 
     cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
-
-
 
 void clear_goats(set<Goat> &trip)
 {
@@ -301,19 +298,20 @@ void find_goat(set<Goat> trip)
         cout << "Couldn't find goat with name: " << buf << "in the trip.\n";
 }
 
-void double_ages(set<Goat> &trip)
+void print_ages(set<Goat> trip)
 {
-    // for_each(trip.begin(), trip.end(), [](Goat goat){ goat.set_age(goat.get_age()*2);}); // why would you ever need to double all the ages of your goats
+    for_each(trip.begin(), trip.end(), [](Goat goat){ cout << goat.get_age() << '\n';}); //changed functionality to print all ages with single line
 }
-/*
+
+
 void add_year(set<Goat> &trip) // adds +1 to all years in the set
 {
-    transform(trip.begin(), trip.end(), trip.begin(), [](int n)
+    transform(trip.begin(), trip.end(), trip.begin(), [](Goatn)
               { return n + 1; });
 }
 
 
-
+/*
 void replace(set<Goat> &trip)
 {
     int current, target;
@@ -333,9 +331,10 @@ void replace(set<Goat> &trip)
         cin >> target;
     }
     replace(trip.begin(), trip.end(), current, target);
-}
-*/
-void is_senior(set<Goat> trip)
+}*/
+
+
+void has_senior(set<Goat> trip)
 {
     bool isOld = any_of(trip.begin(), trip.end(), [](Goat goat)
                         { return goat.get_age() > 15; });
