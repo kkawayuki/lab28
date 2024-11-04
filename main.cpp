@@ -283,7 +283,7 @@ void find_goat(set<Goat> trip)
 
 void double_ages(set<Goat> &trip)
 {
-    for_each(trip.begin(), trip.end(), [](int &n = trip->)
+    for_each(trip.begin(), trip.end(), [](int &n)
              { n *= 2; }); // why would you ever need to double all the ages of your goats
 }
 
