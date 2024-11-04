@@ -30,9 +30,10 @@ void average_ages(set<Goat> trip);
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void print_ages(set<Goat> trip);
+void copy_trip(set<Goat> trip); 
 
-
-void add_year(set<Goat> &trip);/*
+/*
+void add_year(set<Goat> &trip);
 void replace(set<Goat> &trip);
 */
 
@@ -115,13 +116,13 @@ int main()
             print_ages(trip);
             break;
         }
-        
+        /*
         case (9):
         {
             add_year(trip);
             break;
         }  
-        case (10):/*
+        case (10):
         {
             replace(trip);
             break;
@@ -303,15 +304,15 @@ void print_ages(set<Goat> trip)
     for_each(trip.begin(), trip.end(), [](Goat goat){ cout << goat.get_age() << '\n';}); //changed functionality to print all ages with single line
 }
 
-
+/*
 void add_year(set<Goat> &trip) // adds +1 to all years in the set
 {
-    transform(trip.begin(), trip.end(), trip.begin(), [](Goatn)
-              { return n + 1; });
+    transform(trip.begin(), trip.end(), trip.begin(), [](Goat &n) 
+              { return n.set_age(n.get_age()+1);}); //not working due to immutability
 }
 
 
-/*
+
 void replace(set<Goat> &trip)
 {
     int current, target;
@@ -340,6 +341,15 @@ void has_senior(set<Goat> trip)
                         { return goat.get_age() > 15; });
     cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';
 }
+
+void copy_trip(set<Goat> trip)
+{
+    set<Goat> trip2; 
+    copy(trip.begin(),trip.end(), trip2.begin()); //copy contents of trip 1 into 2
+    cout << "Copy complete\n"; 
+} 
+
+
 
 /*
 void remove_age(set<Goat> &trip)
