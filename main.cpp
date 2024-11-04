@@ -21,7 +21,11 @@ void display_trip(set<Goat> trip);
 int main_menu();
 
 // algorithm prototypes
+
+
+
 void average_ages(set<Goat> trip);
+/*
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void double_ages(set<Goat> &trip);
@@ -29,6 +33,8 @@ void add_year(set<Goat> &trip);
 void replace(set<Goat> &trip);
 void is_senior(set<Goat> trip);
 void remove_age(set<Goat> &trip);
+
+*/
 
 /************************************************
  * Function: Main
@@ -88,6 +94,7 @@ int main()
             average_ages(trip);
             break;
         }
+        /*
         case (6):
         {
             clear_goats(trip);
@@ -123,8 +130,10 @@ int main()
             remove_age(trip);
             break;
         }
-            // NOTE: no default needed, as int choice validation is in main_menu() function
+        */
+            
         }
+        
     }
 
     return 0;
@@ -254,11 +263,14 @@ void add_goat(set<Goat> &trip, string colors[], string names[])
 
 // adding 8 more options with functionality
 
+
 void average_ages(set<Goat> trip)
 {
     double totalAge = accumulate(trip.begin(), trip.end(), 0);
     cout << "Average age of the goats: " << (totalAge / trip.size()) << '\n';
 }
+
+/*
 
 void clear_goats(set<Goat> &trip)
 {
@@ -267,6 +279,7 @@ void clear_goats(set<Goat> &trip)
     cout << "Result of call to display all: ";
     display_trip(trip); // to show that now empty
 }
+
 
 void find_goat(set<Goat> trip)
 {
@@ -292,6 +305,8 @@ void add_year(set<Goat> &trip) // adds +1 to all years in the set
     transform(trip.begin(), trip.end(), trip.begin(), [](int n)
               { return n + 1; });
 }
+
+
 
 void replace(set<Goat> &trip)
 {
@@ -334,14 +349,4 @@ void remove_age(set<Goat> &trip)
     trip.erase(remove(trip.begin(), trip.end(), i), trip.end());
 }
 
-/*
-NOTE: I was about 15 seconds into coding a shuffle function when
-I remembered that sets are ordered... It's like the main appeal
-of using a set.
-
-void shuffle(set<Goat> &trip)
-{
-    default_random_engine(); //intialize default random engine
-    shuffle(trip.begin(), trip.end());
-}
 */
