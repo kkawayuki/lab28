@@ -30,12 +30,16 @@ void average_ages(set<Goat> trip);
 void clear_goats(set<Goat> &trip);
 void find_goat(set<Goat> trip);
 void double_ages(set<Goat> &trip);
+
 /*
 void add_year(set<Goat> &trip);
 void replace(set<Goat> &trip);
-void is_senior(set<Goat> trip);
-void remove_age(set<Goat> &trip);
+*/
 
+void is_senior(set<Goat> trip);
+
+/*
+void remove_age(set<Goat> &trip);
 */
 
 /************************************************
@@ -122,11 +126,13 @@ int main()
             replace(trip);
             break;
         }
+        */
         case (11):
         {
             is_senior(trip);
             break;
         }
+        /*
         case (12):
         {
             remove_age(trip);
@@ -297,7 +303,7 @@ void find_goat(set<Goat> trip)
 
 void double_ages(set<Goat> &trip)
 {
-    for_each(trip.begin(), trip.end(), [](Goat goat){ goat.set_age(goat.get_age()*2); }); // why would you ever need to double all the ages of your goats
+    // for_each(trip.begin(), trip.end(), [](Goat goat){ goat.set_age(goat.get_age()*2);}); // why would you ever need to double all the ages of your goats
 }
 /*
 void add_year(set<Goat> &trip) // adds +1 to all years in the set
@@ -328,14 +334,15 @@ void replace(set<Goat> &trip)
     }
     replace(trip.begin(), trip.end(), current, target);
 }
-
+*/
 void is_senior(set<Goat> trip)
 {
-    bool isOld = any_of(trip.begin(), trip.end(), [](int score)
-                        { return score > 15; });
+    bool isOld = any_of(trip.begin(), trip.end(), [](Goat goat)
+                        { return goat.get_age() > 15; });
     cout << "Is a Senior: " << (isOld ? "Yes" : "No") << '\n';
 }
 
+/*
 void remove_age(set<Goat> &trip)
 {
     int i;
