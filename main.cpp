@@ -31,7 +31,7 @@ void print_ages(set<Goat> trip);
 void copy_trip(set<Goat> trip);
 
 void add_year(set<Goat> trip);
-// void replace(set<Goat> &trip);
+void replace(set<Goat> &trip);
 
 void has_senior(set<Goat> trip);
 
@@ -313,18 +313,34 @@ void copy_trip(set<Goat> trip)
     cout << "Copy complete, data stored in a seperate vector.\n";
 }
 
-// experimental
 
-void add_year(set<Goat> trip) // adds +1 to all years in the set
+// nonpermanent change (does not apply to set), applies transformation to a vector of ints
+void add_year(set<Goat> trip) 
 {
-    static vector<Goat> tripPlusOne; 
-    transform(trip.begin(), trip.end(), tripPlusOne.begin(), [](Goat n)
-              { return n.set_age(n.get_age()+1);});
+    static vector<int> agesPlusOne(trip.size()); 
+    transform(trip.begin(), trip.end(), agesPlusOne.begin(), [](Goat n)
+              {return(n.get_age()+1);});
+    
+    //display changes
+    cout << "Original Ages: \n"; 
+    print_ages(trip);
+    cout << '\n';
+
+    cout << "Transformed ages: \n"; 
+    for(const auto &i : agesPlusOne)
+    {
+        cout << i << '\n'; 
+    }
+    cout << '\n';
 }
 
-/*
+
+// experimental
+
 void replace(set<Goat> &trip)
 {
+    vector<Goat>replacedTrip = trip; 
+
     int current, target;
     cout << "Enter the current age of goat(s) that you want to replace: ";
     cin >> current;
@@ -342,7 +358,8 @@ void replace(set<Goat> &trip)
         cin >> target;
     }
     replace(trip.begin(), trip.end(), current, target);
-}*/
+}
+
 
 /*
 
