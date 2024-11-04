@@ -28,8 +28,8 @@ void clear_goats(list<Goat> &trip);
 void merge_trip(list<Goat> &trip);
 void print_ages(list<Goat> trip);
 void copy_trip(list<Goat> trip);
-void add_year(list<Goat> trip);
-void shuffle_trip(list<Goat> trip);
+void reverse(list<Goat> &trip);
+void fill_test(list<Goat> &trip);
 void has_senior(list<Goat> trip);
 
 /************************************************
@@ -53,10 +53,8 @@ int main()
         ;
     fin1.close();
 
-    // note: names/colors arrays now full of values
-    list<Goat> trip; // list of goats is called a trip?
+    list<Goat> trip; 
 
-    // my code
     bool again = true;
 
     while (again)
@@ -66,7 +64,7 @@ int main()
         {
         case (1):
         {
-            add_goat(trip, colors, names); // pass list of trips, colors[], names[]
+            add_goat(trip, colors, names); 
             cout << "Added goat!\n";
             break;
         }
@@ -112,12 +110,12 @@ int main()
         }
         case (10):
         {
-            add_year(trip);
+            reverse(trip);
             break;
         }
         case (11):
         {
-            shuffle_trip(trip);
+            fill_test(trip);
             break;
         }
         case (12):
@@ -144,8 +142,8 @@ int main_menu()
          << "[7] Merge trip\n"
          << "[8] Print All Ages\n"
          << "[9] Copy Trip\n"
-         << "[10] Add +1 Year to All\n"
-         << "[11] Shuffle Trip\n"
+         << "[10] Reverse Trip\n"
+         << "[11] Fill Trip with Test Goats\n"
          << "[12] Check for Senior Goats\n"
          << "Choice --> ";
     cin >> choice;
@@ -307,9 +305,9 @@ void has_senior(list<Goat> trip)
  ************************************************/
 void copy_trip(list<Goat> trip)
 {
-    list<Goat> trip2;                     
+    list<Goat> trip2(trip.size());                     
     copy(trip.begin(), trip.end(), trip2.begin()); // copy contents of trip 1 into vector 2
-    cout << "Copy complete, data stored in a seperate list.\n";
+    cout << "Copy succesful\nDoing operations on copy:";
 
     //modifications to trip 2 copy
     merge_trip(trip2);
@@ -320,43 +318,31 @@ void copy_trip(list<Goat> trip)
 }
 
 /************************************************
- * Function: Creates a vector that contains the
- * result of incrementing all age fields of the
- * original trip and compares the values to the
- * original through iterative print statements
- * using the transform() algorithm.
+ * Function: Use the reverse() algorithm to reverse
+ * the order of goats in the list
  *
- * Parameters: trip, list containing the goat objects
+ * Parameters: &trip, list containing the goat objects
+ * passed by reference, as modification of the original
+ * list happens in the function
  ************************************************/
-void add_year(list<Goat> &trip)
+void reverse(list<Goat> &trip)
 {
-    transform(trip.begin(), trip.end(), trip.begin(), [](Goat &n)
-              { return (n.get_age() + 1); });
-
-    // display changes
-    cout << "Resultant Ages: \n";
-    print_ages(trip);
-    cout << '\n';
+    cout << "Reversing: \n"; 
+    reverse(trip.begin(), trip.end()); 
 }
 
 /************************************************
- * Function: Creates a vector that contains a random-
- * ized order of the list elements, randomizing
- * the order using the shuffle() algorithm, then
- * outputs the data of the vector to compare to
- * the original, sorted version.
+ * Function: Use the fill() algorithm to essentially
+ * reset the values of all current Goats to that of
+ * a "filler" goat. Maybe useful in a situation where
+ * you hate all your goats and want to wipe their 
+ * data but not destroy them
  *
- * Parameters: trip, list containing the goat objects
+ * Parameters: &trip, list containing the goat objects
+ * passed by reference, as modification of the original
+ * list happens in the function
  ************************************************/
-void shuffle_trip(list<Goat> trip)
+void fill_test(list<Goat> &trip)
 {
-    vector<Goat> shuffledTrip(trip.size());
-    copy(trip.begin(), trip.end(), shuffledTrip.begin()); // copy contents of trip 1 into vector 2
-    shuffle(shuffledTrip.begin(), shuffledTrip.end(), default_random_engine());
-
-    int i = 1;
-    for (auto it = shuffledTrip.begin(); it != shuffledTrip.end(); ++it, ++i) // for each element in trip
-    {
-        cout << "[" << i << "] " << it->get_name() << "(" << it->get_age() << ", " << it->get_color() << ")\n"; // print result of shuffle
-    }
+    fill(trip.begin(), trip.end(), Goat("TEST",0,"N/A"));
 }
